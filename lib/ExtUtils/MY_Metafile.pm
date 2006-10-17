@@ -11,10 +11,19 @@ package ExtUtils::MY_Metafile;
 use strict;
 use warnings;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 our @EXPORT = qw(my_metafile);
 
 1;
+
+# -----------------------------------------------------------------------------
+# for: use inc::ExtUtils::MY_Metafile;
+#
+sub inc::ExtUtils::MY_Metafile::import
+{
+	push(@inc::ExtUtils::MY_Metafile::ISA, __PACKAGE__);
+	goto &import;
+}
 
 # -----------------------------------------------------------------------------
 # import.
@@ -61,19 +70,22 @@ metafile:
 	$(NOECHO) $(NOOP)
 MAKE_FRAG
 
+    my $requires = $param->{requires} || $self->{PREREQ_PM};
     my $prereq_pm = '';
-    foreach my $mod ( sort { lc $a cmp lc $b } keys %{$self->{PREREQ_PM}} ) {
+    foreach my $mod ( sort { lc $a cmp lc $b } keys %$requires ) {
         my $ver = $self->{PREREQ_PM}{$mod};
         $prereq_pm .= sprintf "    %-30s %s\n", "$mod:", $ver;
     }
+    chomp $prereq_pm;
+    $prereq_pm and $prereq_pm = "requires:\n".$prereq_pm;
 
     my $no_index = $param->{no_index};
     if( !$no_index )
     {
-			my @dirs = grep{-d $_} (qw(example examples inc t));
-			$no_index = @dirs && +{ directory => \@dirs };
+      my @dirs = grep{-d $_} (qw(example examples inc t));
+      $no_index = @dirs && +{ directory => \@dirs };
     }
-		$no_index = $no_index ? _yaml_out({no_index=>$no_index}) : '';
+    $no_index = $no_index ? _yaml_out({no_index=>$no_index}) : '';
     chomp $no_index;
     if( $param->{no_index} && !$ENV{NO_NO_INDEX_CHECK} )
     {
@@ -83,14 +95,6 @@ MAKE_FRAG
         $key =~ /^(file|dir|directory|package|namespace)$/ and next;
         warn "$key is invalid field for no_index.\n";
       }
-    }
-
-    # customize yaml.
-    my $extra = '';
-    foreach my $key (sort keys %$param)
-    {
-      $key eq 'no_index' and next;
-      $extra .= _yaml_out->({$key=>$param->{$key}});
     }
 
     my $abstract = '';
@@ -115,26 +119,66 @@ MAKE_FRAG
       $abstract = $abstract ? _yaml_out({abstract=>$abstract}) : '';
     }
     chomp $abstract;
-    $abstract eq '' and $abstract = "#abstract:";
 
+    my $yaml = {};
+    $yaml->{name}         = $self->{DISTNAME};
+    $yaml->{version}      = $self->{VERSION};
+    $yaml->{version_from} = $self->{VERSION_FROM};
+    $yaml->{installdirs}  = $self->{INSTALLDIRS};
+    $yaml->{author}       = $self->{AUTHOR};
+    foreach my $key (keys %$yaml)
+    {
+      if( $yaml->{$key} )
+      {
+        my $pad = ' 'x(12-length($key));
+        $yaml->{$key} = sprintf('%s:%s %s', $key, $pad, $yaml->{$key});
+      }else
+      {
+        $yaml->{$key} = "#$key:";
+      }
+    }
+    $yaml->{abstract} = $abstract  || "#abstract:";
+    $yaml->{requires} = $prereq_pm || "#requires:";
+    $yaml->{no_index} = $no_index;
+    
+    $yaml->{distribution_type} = 'distribution_type: module';
+    $yaml->{generated_by} = "generated_by: ExtUtils::MY_Metafile version $VERSION";
+    $yaml->{'meta-spec'}  = "meta-spec:\n";
+    $yaml->{'meta-spec'} .= "  version: 1.2\n";
+    $yaml->{'meta-spec'} .= "  url: http://module-build.sourceforge.net/META-spec-v1.2.html\n";
+    
+    # customize yaml.
+    my $extra = '';
+    foreach my $key (sort keys %$param)
+    {
+      $key eq 'no_index' and next;
+      my $line = _yaml_out->({$key=>$param->{$key}});
+      if( $yaml->{$key} )
+      {
+        chomp $line;
+        $yaml->{$key} = $line;
+      }else
+      {
+        $extra .= $line;
+      }
+    }
+    $yaml->{extra}    = $extra;
+    
     my $meta = <<YAML;
 # http://module-build.sourceforge.net/META-spec.html
 #XXXXXXX This is a prototype!!!  It will change in the future!!! XXXXX#
-name:         $self->{DISTNAME}
-version:      $self->{VERSION}
-version_from: $self->{VERSION_FROM}
-installdirs:  $self->{INSTALLDIRS}
-author:       $self->{AUTHOR}
-$abstract
-requires:
-$prereq_pm
-$no_index
-$extra
-distribution_type: module
-generated_by: ExtUtils::MY_Metafile version $VERSION
-meta-spec:
-  version: 1.2
-  url: http://module-build.sourceforge.net/META-spec-v1.2.html
+$yaml->{name}
+$yaml->{version}
+$yaml->{version_from}
+$yaml->{installdirs}
+$yaml->{author}
+$yaml->{abstract}
+$yaml->{requires}
+$yaml->{no_index}
+$yaml->{extra}
+$yaml->{distribution_type}
+$yaml->{generated_by}
+$yaml->{'meta-spec'}
 YAML
     #print "$meta";
 
@@ -211,13 +255,13 @@ ExtUtils::MY_Metafile - META.yml customize with ExtUtil::MakeMaker
 
 =head1 VERSION
 
-Version 0.01
+Version 0.02
 
 =head1 SYNOPSIS
 
   # in your Makefile.PL
   use ExtUtils::MakeMaker;
-  use ExtUtils::MY_Metafile;
+  use inc::ExtUtils::MY_Metafile;
   
   my_metafile {
     no_index => {

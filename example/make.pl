@@ -1,9 +1,7 @@
 use strict;
 use warnings;
 use ExtUtils::MakeMaker;
-
-use lib 'inc','lib','../lib';
-use ExtUtils::MY_Metafile qw(my_metafile);
+use inc::ExtUtils::MY_Metafile;
 
 my_metafile {
   no_index => {
@@ -13,10 +11,10 @@ my_metafile {
 };
 
 WriteMakefile(
-  NAME                => 'YourModule',
-  AUTHOR              => 'module author <   @cpan.org>',
-  VERSION_FROM        => 'YourModule.pm',
-  ABSTRACT_FROM       => 'YourModule.pm',
+  NAME                => 'MyTest',
+  AUTHOR              => 'YAMASHINA Hio <hio@cpan.org>',
+  VERSION_FROM        => 'MyTest.pm',
+  ABSTRACT_FROM       => 'MyTest.pm',
   PL_FILES            => {},
   PREREQ_PM => {
       'Test::More' => 0,

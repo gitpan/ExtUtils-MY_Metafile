@@ -5,6 +5,7 @@ Makefile.PL
 README
 SIGNATURE
 example/make.pl
+example/MyTest.pm
 lib/ExtUtils/MY_Metafile.pm
 t/00-load.t
 t/boilerplate.t

@@ -1,5 +1,8 @@
 Revision history for ExtUtils-MY_Metafile
 
+0.02    Tue Oct 17 19:31:13 JST 2006
+        fix, suppress some warnings.
+
 0.01    Tue Oct 17 15:51:42 JST 2006
         First version.
 
