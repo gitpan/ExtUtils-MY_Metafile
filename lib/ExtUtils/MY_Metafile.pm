@@ -5,14 +5,17 @@
 #
 # Copyright 2006 YAMASHINA Hio
 # -----------------------------------------------------------------------------
-# $Id$
+# $Id: /perl/ExtUtils-MY_Metafile/lib/ExtUtils/MY_Metafile.pm 167 2006-10-20T07:27:33.200983Z hio  $
 # -----------------------------------------------------------------------------
 package ExtUtils::MY_Metafile;
 use strict;
 use warnings;
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 our @EXPORT = qw(my_metafile);
+
+our %META_PARAMS; # DISTNAME=>HASHREF.
+our $DIAG_VERSION and &_diag_version;
 
 1;
 
@@ -37,48 +40,122 @@ sub import
 	foreach my $name (@syms)
 	{
 		my $sub = $pkg->can($name);
-		$sub or die "no such export tag: $name";
+		$sub or next;
 		no strict 'refs';
 		*{$callerpkg.'::'.$name} = $sub;
+	}
+	if( !grep{ /^:no_setup$/ } @_ )
+	{
+		# override.
+		*MM::metafile_target = \&_mm_metafile;
 	}
 }
 
 # -----------------------------------------------------------------------------
-# my_metafile({...});
+# _diag_version();
 #
-sub my_metafile
+sub _diag_version
 {
-	my $meta = shift;
-	
-	# override.
-	*MM::metafile_target = sub{
-		_mm_metafile(shift, $meta);
-	};
+	require ExtUtils::MakeMaker;
+	my $mmver = $ExtUtils::MakeMaker::VERSION;
+	if( $mmver >= 6.30 )
+	{
+		print STDERR "# ExtUtils::MY_Metafile for MM 6.30 or later ($mmver).\n";
+	}else
+	{
+		print STDERR "# ExtUtils::MY_Metafile for MM 6.25 or earlier ($mmver).\n";
+	}
 }
 
 # -----------------------------------------------------------------------------
-# _mm_metafile($MM, {...});
+# my_metafile($distname => $param);
+# my_metafile($param);
+#
+sub my_metafile
+{
+	my $distname = @_>=2 && shift;
+	my $param    = shift;
+	UNIVERSAL::isa($distname,'HASH') and $distname = $distname->{DISTNAME};
+	$distname ||= '';
+	$distname =~ s/::/-/g;
+	$META_PARAMS{$distname} and warn "# overwrite previous meta config $distname.\n";
+	$META_PARAMS{$distname} = $param;
+}
+
+# -----------------------------------------------------------------------------
+# _mm_metafile($MM)
+#  altanative of MM::metafile_target.
+#  takes $MM object and returns makefile text.
 #
 sub _mm_metafile
 {
-    # from MakeMaker-6.30.
-    my $self = shift;
-    my $param = shift;
-    
-    return <<'MAKE_FRAG' if $self->{NO_META};
-metafile:
-	$(NOECHO) $(NOOP)
-MAKE_FRAG
+	my $this = shift;
+	
+	if( $this->{NO_META} )
+	{
+		return
+			"metafile:\n" .
+			"\t\$(NOECHO) \$(NOOP)\n";
+	}
+	
+	# generate META.yml text.
+	#
+	my $meta = _gen_meta_yml($this);
+	my @write_meta = (
+		'$(NOECHO) $(ECHO) Generating META.yml',
+		$this->echo($meta, 'META_new.yml'),
+	);
+	
+	# format as makefile text.
+	#
+	my ($make_target, $metaout_file);
+	if( $ExtUtils::MakeMaker::VERSION >= 6.30 )
+	{
+		$make_target  = "# for MM 6.30 or later.\n";
+		$make_target .= "metafile : create_distdir\n";
+		$metaout_file = '$(DISTVNAME)/META.yml';
+	}else
+	{
+		$make_target  = "# for MM 6.25 or earlier.\n";
+		$make_target .= "metafile :\n";
+		$metaout_file  = 'META.yml',
+	}
+	
+	my $rename_meta  = "-\$(NOECHO) \$(MV) META_new.yml $metaout_file";
+	my $make_body = join('', map{"\t$_\n"} @write_meta, $rename_meta);
+	"$make_target$make_body";
+}
 
-    my $requires = $param->{requires} || $self->{PREREQ_PM};
+# -----------------------------------------------------------------------------
+# _gen_meta_yml($MM);
+#  generate META.yml text.
+#
+sub _gen_meta_yml
+{
+    # from MakeMaker-6.30.
+    my $this = shift;
+    my $param = shift;
+    if( !$param )
+    {
+      $param = $META_PARAMS{$this->{DISTNAME}} || $META_PARAMS{''} || {};
+    }
+		if( $META_PARAMS{':all'} )
+		{
+			# special key.
+			$param = { %{$META_PARAMS{':all'}}, %$param };
+		}
+    
+    # requires:
+    my $requires = $param->{requires} || $this->{PREREQ_PM};
     my $prereq_pm = '';
     foreach my $mod ( sort { lc $a cmp lc $b } keys %$requires ) {
-        my $ver = $self->{PREREQ_PM}{$mod};
+        my $ver = $this->{PREREQ_PM}{$mod};
         $prereq_pm .= sprintf "    %-30s %s\n", "$mod:", $ver;
     }
     chomp $prereq_pm;
     $prereq_pm and $prereq_pm = "requires:\n".$prereq_pm;
 
+    # no_index:
     my $no_index = $param->{no_index};
     if( !$no_index )
     {
@@ -97,16 +174,17 @@ MAKE_FRAG
       }
     }
 
+    # abstract is from file.
     my $abstract = '';
-    if( $self->{ABSTRACT} )
+    if( $this->{ABSTRACT} )
     {
-      $abstract = _yaml_out({abstract => $self->{ABSTRACT}});
-    }elsif( $self->{ABSTRACT_FROM} && open(my$fh, "< $self->{ABSTRACT_FROM}") )
+      $abstract = _yaml_out({abstract => $this->{ABSTRACT}});
+    }elsif( $this->{ABSTRACT_FROM} && open(my$fh, "< $this->{ABSTRACT_FROM}") )
     {
       while(<$fh>)
       {
         /^=head1 NAME$/ or next;
-        (my $pkg = $self->{DISTNAME}) =~ s/-/::/g;
+        (my $pkg = $this->{DISTNAME}) =~ s/-/::/g;
         while(<$fh>)
         {
           /^=/ and last;
@@ -119,13 +197,14 @@ MAKE_FRAG
       $abstract = $abstract ? _yaml_out({abstract=>$abstract}) : '';
     }
     chomp $abstract;
-
+    
+    # build yaml object as hash.
     my $yaml = {};
-    $yaml->{name}         = $self->{DISTNAME};
-    $yaml->{version}      = $self->{VERSION};
-    $yaml->{version_from} = $self->{VERSION_FROM};
-    $yaml->{installdirs}  = $self->{INSTALLDIRS};
-    $yaml->{author}       = $self->{AUTHOR};
+    $yaml->{name}         = $this->{DISTNAME};
+    $yaml->{version}      = $this->{VERSION};
+    $yaml->{version_from} = $this->{VERSION_FROM};
+    $yaml->{installdirs}  = $this->{INSTALLDIRS};
+    $yaml->{author}       = $this->{AUTHOR};
     foreach my $key (keys %$yaml)
     {
       if( $yaml->{$key} )
@@ -164,6 +243,7 @@ MAKE_FRAG
     }
     $yaml->{extra}    = $extra;
     
+    # packing into singple text.
     my $meta = <<YAML;
 # http://module-build.sourceforge.net/META-spec.html
 #XXXXXXX This is a prototype!!!  It will change in the future!!! XXXXX#
@@ -180,31 +260,8 @@ $yaml->{distribution_type}
 $yaml->{generated_by}
 $yaml->{'meta-spec'}
 YAML
-    #print "$meta";
-
-    my @write_meta = $self->echo($meta, 'META_new.yml');
-
-    my $format;
-    if( $ExtUtils::MakeMaker::VERSION >= 6.30 )
-    {
-        $format = <<'MAKE_FRAG';
-# MM 6.30 or later.
-metafile : create_distdir
-	$(NOECHO) $(ECHO) Generating META.yml
-	%s
-	-$(NOECHO) $(MV) META_new.yml $(DISTVNAME)/META.yml
-MAKE_FRAG
-    }else
-    {
-        $format = <<'MAKE_FRAG';
-# MM 6.25 or earlier.
-metafile :
-	$(NOECHO) $(ECHO) Generating META.yml
-	%s
-	-$(NOECHO) $(MV) META_new.yml META.yml
-MAKE_FRAG
-    }
-    sprintf $format, join("\n\t", @write_meta);
+	#print "$meta";
+	$meta;
 }
 
 # -----------------------------------------------------------------------------
@@ -255,7 +312,7 @@ ExtUtils::MY_Metafile - META.yml customize with ExtUtil::MakeMaker
 
 =head1 VERSION
 
-Version 0.02
+Version 0.03
 
 =head1 SYNOPSIS
 
@@ -271,6 +328,7 @@ Version 0.02
   };
   
   WriteMakefile(
+    DISTNAME => 'Your::Module',
     ...
   );
 
@@ -280,9 +338,11 @@ This module exports one function.
 
 =head1 FUNCTIONS
 
-=head2 my_metafile {meta-param...};
+=head2 my_metafile \%meta_param;
 
-Takes one hash-reference.
+Takes one or two arguments.
+First one is package name to be generated, and you can omit this 
+argument.  Second is hashref which contains META.yml contents.
 
   my_metafile {
     no_index => {

@@ -14,22 +14,26 @@ not run its Makefile.PL or Build.PL.
 -----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA1
 
-SHA1 a9a1e86a6aba30108f00e9eccbaa649787f8785e Changes
-SHA1 42e78b21d53a0ce5d39a081f7fddd67aad8053ac MANIFEST
-SHA1 3fff7170ad017818b95d5de55ad0eedeb29fdd99 META.yml
-SHA1 2f280d3d92530601e4fba341a817e53f13416ab3 Makefile.PL
+SHA1 1a0a6c78f60a303a30221ec070f18a8b934801eb Changes
+SHA1 75edddda1ea9c5646baf48ac18140fac18a7331e MANIFEST
+SHA1 dbde70f9f9b4dd0ed2856eff7bd34383bf5df38f META.yml
+SHA1 a2ca7c858e673516cb81333e8e54127d1c7ec74d Makefile.PL
 SHA1 d0f01f1bed98ea993350d159f8c14a309cd98b43 README
 SHA1 b46aabb98f07c7be7e1d1e14affa2abee07e1d95 example/MyTest.pm
 SHA1 076e990dccfd578ec7e9b41f62138dc8dc520c3b example/make.pl
-SHA1 d89400cbe712c7b81a0373bd55075a752e4f61c3 lib/ExtUtils/MY_Metafile.pm
-SHA1 8d49fcfca7428cf57228971220b0a03e70027a40 t/00-load.t
-SHA1 7ba2da7bd3fc6548025df6e7e85fa68532df749a t/boilerplate.t
-SHA1 6da39b48ce64b584e4c3274bff96fc76ff484820 t/pod-coverage.t
-SHA1 0190346d7072d458c8a10a45c19f86db641dcc48 t/pod.t
+SHA1 605d991e54828ce2786b896269dbb0e740325040 lib/ExtUtils/MY_Metafile.pm
+SHA1 9015dfb1f64fd5175566c20c28209b5c438d7b70 t/00-load.t
+SHA1 b011ded4c33f9907d739da55d261f993c6b9953a t/01_basic.t
+SHA1 d9e958e217aa026d5bad51e1109fd7b333b17fb6 t/01_import.t
+SHA1 e90a70ba601c32188338ddeac4578c3ed941259e t/01_inc_import.t
+SHA1 52a26b42ebe2d31e9d37424b06f15c7049ffcebe t/01_mm_metafile_target.t
+SHA1 d5fa03a67d2cb379306c6aa58655301dad0ec33e t/boilerplate.t
+SHA1 44cccd384ccc8d87d09e2e612758755e64c45d70 t/pod-coverage.t
+SHA1 d110b42bee27b0b1520b51e6f15ec582004f8bba t/pod.t
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.2 (GNU/Linux)
 
-iD8DBQFFNLEGewjCT38k4dkRAkHwAJ9dAd/DI/KNH8tfCnB/pwXdXuGwcwCfdryC
-Cdfxu7PjF13/EgQQXdA0uoI=
-=1+3A
+iD8DBQFFOgh2ewjCT38k4dkRApHRAJ9g1vMEmmRrTYD5z++psgrOvgUH4gCdHRg+
+1HMqpg4wxQZm6jBeHNWoe+I=
+=hTCy
 -----END PGP SIGNATURE-----

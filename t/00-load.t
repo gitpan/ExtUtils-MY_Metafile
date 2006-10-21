@@ -1,8 +1,9 @@
-#!perl -T
+#! perl -T
 
 use Test::More tests => 1;
 
 BEGIN {
+	$ExtUtils::MY_Metafile::DIAG_VERSION = 1;
 	use_ok( 'ExtUtils::MY_Metafile' );
 }
 

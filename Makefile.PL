@@ -5,7 +5,7 @@ use ExtUtils::MakeMaker;
 use lib 'lib';
 use ExtUtils::MY_Metafile qw(my_metafile);
 
-my_metafile({
+my_metafile( 'ExtUtils::MY_Metafile' => {
 	no_index => {
     directory => [ qw(example t), ],
 	},

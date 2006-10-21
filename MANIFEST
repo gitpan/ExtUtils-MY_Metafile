@@ -8,6 +8,10 @@ example/make.pl
 example/MyTest.pm
 lib/ExtUtils/MY_Metafile.pm
 t/00-load.t
+t/01_basic.t
+t/01_import.t
+t/01_inc_import.t
+t/01_mm_metafile_target.t
 t/boilerplate.t
 t/pod-coverage.t
 t/pod.t

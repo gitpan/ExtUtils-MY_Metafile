@@ -1,7 +1,7 @@
 # http://module-build.sourceforge.net/META-spec.html
 #XXXXXXX This is a prototype!!!  It will change in the future!!! XXXXX#
 name:         ExtUtils-MY_Metafile
-version:      0.02
+version:      0.03
 version_from: lib/ExtUtils/MY_Metafile.pm
 installdirs:  site
 author:       YAMASHINA Hio <hio@cpan.org>
@@ -15,7 +15,7 @@ no_index:
 license: perl
 
 distribution_type: module
-generated_by: ExtUtils::MY_Metafile version 0.02
+generated_by: ExtUtils::MY_Metafile version 0.03
 meta-spec:
   version: 1.2
   url: http://module-build.sourceforge.net/META-spec-v1.2.html
