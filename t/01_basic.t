@@ -15,6 +15,13 @@ use Test::Exception;
 
 BEGIN{ use_ok('ExtUtils::MY_Metafile'); }
 require ExtUtils::MakeMaker;
+our $DUMMY_DATA = {
+	DISTNAME => 'Dummy-Data',
+	AUTHOR   => 'dummy person',
+	VERSION  => 1,
+	ABSTRACT => 'dummy data',
+	LICENSE  => 'dummy license',
+};
 
 &test_01_basic;
 
@@ -25,11 +32,11 @@ sub test_01_basic
 {
 	lives_and(sub{
 		my_metafile( {} );
-		my $dummy_mm = _dummy_mm({ DISTNAME => 'DUMMY' });
+		my $dummy_mm = _dummy_mm($DUMMY_DATA);
 		my $meta = ExtUtils::MY_Metafile::_gen_meta_yml($dummy_mm);
 		ok($meta, '[basic] _gen_meta_yml returns something.');
-		my $re_name = qr/^name:\s+DUMMY$/;
-		ok($meta=~/$re_name/m, "[basic] has name")
+		my $re_name = qr/^name:\s+Dummy-Dat[a]$/m;
+		like($meta, $re_name, "[basic] has name")
 	}, "[basic] (execution)");
 	1;
 }

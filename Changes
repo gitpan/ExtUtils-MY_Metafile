@@ -1,5 +1,10 @@
 Revision history for ExtUtils-MY_Metafile
 
+0.04    Fri Nov  3 18:59:40 JST 2006
+        fix, overwriting requires directive.
+        add, check whether valid for meta-spec.
+        add, support LICENSE attribute of EUMM.
+
 0.03    Fri Oct 20 15:54:42 JST 2006
         add tests.
 

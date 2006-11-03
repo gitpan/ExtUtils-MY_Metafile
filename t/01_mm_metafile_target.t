@@ -10,26 +10,49 @@
 # -----------------------------------------------------------------------------
 use strict;
 use warnings FATAL => 'all';
-use Test::More tests => 2;
+use Test::More tests => 5;
 use Test::Exception;
 
 BEGIN{ use_ok('ExtUtils::MY_Metafile'); }
 require ExtUtils::MakeMaker;
+my $metafile_target = \&ExtUtils::MY_Metafile::_mm_metafile;
+our $DUMMY_DATA = {
+	DISTNAME => 'Dummy-Data',
+	AUTHOR   => 'dummy person',
+	VERSION  => 1,
+	ABSTRACT => 'dummy data',
+	LICENSE  => 'dummy license',
+};
 
 &test_01_basic;
+&test_02_no_meta;
 
 # -----------------------------------------------------------------------------
 # test_01_basic.
 #
 sub test_01_basic
 {
-	lives_and(sub{
+	#lives_and(sub{
 		my_metafile(); # set MM::metafile_target.
-		my $dummy_mm = _dummy_mm({ DISTNAME => 'DUMMY' });
-		my $maketext = $dummy_mm->MM::metafile_target();
+		my $dummy_mm = _dummy_mm($DUMMY_DATA);
+		my $maketext = $dummy_mm->$metafile_target();
 		ok($maketext, '[basic] MM::metafile_target() returns something.');
-	}, "[basic] (execution)");
-	1;
+		like($maketext, qr/name:\s+Dummy-Dat[a]/, "[basic] has name")
+	#}, "[basic] (execution)");
+}
+
+# -----------------------------------------------------------------------------
+# test_02_no_meta.
+#
+sub test_02_no_meta
+{
+	#lives_and(sub{
+		my_metafile(); # set MM::metafile_target.
+		my $dummy_mm = _dummy_mm({ NO_META => 1 });
+		my $maketext = $dummy_mm->$metafile_target();
+		ok($maketext, '[no_meta] MM::metafile_target() returns something.');
+		unlike($maketext, qr/META.yml/, "[no_meta] no META.yml")
+	#}, "[no_meta] (execution)");
 }
 
 

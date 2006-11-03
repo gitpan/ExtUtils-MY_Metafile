@@ -4,8 +4,9 @@ META.yml # Will be created by "make dist"
 Makefile.PL
 README
 SIGNATURE
-example/make.pl
 example/MyTest.pm
+example/make.pl
+lib/ExtUtils/MY_Metafile.mlpod
 lib/ExtUtils/MY_Metafile.pm
 t/00-load.t
 t/01_basic.t
