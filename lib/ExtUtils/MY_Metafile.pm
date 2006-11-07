@@ -5,14 +5,14 @@
 #
 # Copyright 2006 YAMASHINA Hio
 # -----------------------------------------------------------------------------
-# $Id: /perl/ExtUtils-MY_Metafile/lib/ExtUtils/MY_Metafile.pm 207 2006-11-07T06:52:00.867237Z hio  $
+# $Id: /perl/ExtUtils-MY_Metafile/lib/ExtUtils/MY_Metafile.pm 209 2006-11-07T07:42:56.011738Z hio  $
 # -----------------------------------------------------------------------------
 package ExtUtils::MY_Metafile;
 use strict;
 use warnings;
 use ExtUtils::MakeMaker;
 
-our $VERSION = '0.06';
+our $VERSION = '0.07';
 our @EXPORT = qw(my_metafile);
 
 our %META_PARAMS; # DISTNAME(pkgname)=>HASHREF.
@@ -167,7 +167,7 @@ sub _gen_meta_yml
 		$yaml ? "$key:\n$yaml" : '';
 	};
 	my $requires = $requires_to_yaml->(requires => $param->{requires} || $this->{PREREQ_PM});
-	my $build_requires = $requires_to_yaml->(build_requries => $param->{build_requires});
+	my $build_requires = $requires_to_yaml->(build_requires => $param->{build_requires});
 	
 	# no_index:
 	my $no_index = $param->{no_index};
@@ -342,6 +342,16 @@ __END__
 
 =encoding utf8
 
+=for stopwords
+  YAMASHINA
+	Hio
+	ACKNOWLEDGEMENTS
+	AnnoCPAN
+	CPAN
+	EUMM
+	META.yml
+	RT
+
 =head1 NAME
 
 ExtUtils::MY_Metafile - META.yml customize with ExtUtil::MakeMaker
@@ -349,7 +359,7 @@ ExtUtils::MY_Metafile - META.yml customize with ExtUtil::MakeMaker
 
 =head1 VERSION
 
-Version 0.06
+Version 0.07
 
 
 =head1 SYNOPSIS
@@ -476,6 +486,8 @@ Copyright 2006 YAMASHINA Hio, all rights reserved.
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.
+
+=cut
 
 # -----------------------------------------------------------------------------
 # End of File.
