@@ -5,14 +5,14 @@
 #
 # Copyright 2006 YAMASHINA Hio
 # -----------------------------------------------------------------------------
-# $Id: /perl/ExtUtils-MY_Metafile/lib/ExtUtils/MY_Metafile.pm 198 2006-11-03T10:00:50.486852Z hio  $
+# $Id: /perl/ExtUtils-MY_Metafile/lib/ExtUtils/MY_Metafile.pm 205 2006-11-07T06:19:51.405629Z hio  $
 # -----------------------------------------------------------------------------
 package ExtUtils::MY_Metafile;
 use strict;
 use warnings;
 use ExtUtils::MakeMaker;
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 our @EXPORT = qw(my_metafile);
 
 our %META_PARAMS; # DISTNAME(pkgname)=>HASHREF.
@@ -135,9 +135,15 @@ sub _gen_meta_yml
 	# from MakeMaker-6.30.
 	my $this = shift;
 	my $param = shift;
+	my $check_mete_spec = 1;
 	if( !$param )
 	{
-		$param = $META_PARAMS{$this->{DISTNAME}} || $META_PARAMS{''} || {};
+		$param = $META_PARAMS{$this->{DISTNAME}} || $META_PARAMS{''};
+		if( !$param )
+		{
+			$param = {};
+			$check_mete_spec = 0;
+		}
 	}
 	if( $META_PARAMS{':all'} )
 	{
@@ -247,9 +253,10 @@ sub _gen_meta_yml
 	my @required_keys = qw(meta-spec name version abstract author license generated_by);
 	foreach my $key (@required_keys)
 	{
+		$check_mete_spec or next;
 		my $ok = $yaml->{$key} && $yaml->{$key}=~/\w/;
 		$ok  ||= $extras->{$key} and next;
-		warn "$key is required for meta-spec v1.2.\n";
+		warn "$key is required for meta-spec v1.2 ($this->{DISTNAME}).\n";
 	}
 	
 	$yaml->{license} ||= 'license: unknown';
@@ -330,7 +337,7 @@ ExtUtils::MY_Metafile - META.yml customize with ExtUtil::MakeMaker
 
 =head1 VERSION
 
-Version 0.04
+Version 0.05
 
 
 =head1 SYNOPSIS

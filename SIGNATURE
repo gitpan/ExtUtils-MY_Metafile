@@ -14,15 +14,15 @@ not run its Makefile.PL or Build.PL.
 -----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA1
 
-SHA1 5ef87bb66e96017ba57369ecc18ecf0e10eb7293 Changes
+SHA1 2696f9e5e6c99f7767ac96ee474e11eba84acfee Changes
 SHA1 fbe7d9503098687a46a76047e7b75e026c5ed6e1 MANIFEST
-SHA1 a443c234f2b41fe9bc97190a20a0f3795739005e META.yml
+SHA1 5685072b7222601158b490bab066564702367851 META.yml
 SHA1 e95712ef28b021fdfc1b8d6b03cf69c67f9e4d6b Makefile.PL
 SHA1 d0f01f1bed98ea993350d159f8c14a309cd98b43 README
 SHA1 b46aabb98f07c7be7e1d1e14affa2abee07e1d95 example/MyTest.pm
 SHA1 076e990dccfd578ec7e9b41f62138dc8dc520c3b example/make.pl
-SHA1 6c5ae45ff0dda1157dce82d1bd20116d68a705b1 lib/ExtUtils/MY_Metafile.mlpod
-SHA1 f64bc1382cd1a340e2decde6984b7fe7df2ef0aa lib/ExtUtils/MY_Metafile.pm
+SHA1 6ede53b653d55bd575a4e807e59e208606733334 lib/ExtUtils/MY_Metafile.mlpod
+SHA1 869d98d8ad0f18972bbf7006dbfb8f1a7e622def lib/ExtUtils/MY_Metafile.pm
 SHA1 9015dfb1f64fd5175566c20c28209b5c438d7b70 t/00-load.t
 SHA1 2977f32d1f7117f55c2ca02306c270b56cf2e42f t/01_basic.t
 SHA1 d9e958e217aa026d5bad51e1109fd7b333b17fb6 t/01_import.t
@@ -34,7 +34,7 @@ SHA1 d110b42bee27b0b1520b51e6f15ec582004f8bba t/pod.t
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.2 (GNU/Linux)
 
-iD8DBQFFSxXnewjCT38k4dkRAi12AJ9sV0D3vMlzaYP90zGQv83y5dOOEwCePZji
-nbLYStocTkWC7j3b6PYzPtM=
-=/gzp
+iD8DBQFFUCWcewjCT38k4dkRAnMZAJwMjc/ue2Kvg0bWfhokj3N4GMf7TACgi7+w
+l8rUYM+t/QqwNkFYTubdcbY=
+=BzJm
 -----END PGP SIGNATURE-----
