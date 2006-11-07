@@ -1,6 +1,9 @@
 Revision history for ExtUtils-MY_Metafile
 
-0.04    Tue Nov  7 15:11:46 JST 2006
+0.06    Tue Nov  7 15:48:00 JST 2006
+        fix, better yaml format.
+
+0.05    Tue Nov  7 15:11:46 JST 2006
         fix, no meta check in subdirs.
 
 0.04    Fri Nov  3 18:59:40 JST 2006

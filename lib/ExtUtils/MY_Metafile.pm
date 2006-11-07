@@ -5,14 +5,14 @@
 #
 # Copyright 2006 YAMASHINA Hio
 # -----------------------------------------------------------------------------
-# $Id: /perl/ExtUtils-MY_Metafile/lib/ExtUtils/MY_Metafile.pm 205 2006-11-07T06:19:51.405629Z hio  $
+# $Id: /perl/ExtUtils-MY_Metafile/lib/ExtUtils/MY_Metafile.pm 207 2006-11-07T06:52:00.867237Z hio  $
 # -----------------------------------------------------------------------------
 package ExtUtils::MY_Metafile;
 use strict;
 use warnings;
 use ExtUtils::MakeMaker;
 
-our $VERSION = '0.05';
+our $VERSION = '0.06';
 our @EXPORT = qw(my_metafile);
 
 our %META_PARAMS; # DISTNAME(pkgname)=>HASHREF.
@@ -151,15 +151,23 @@ sub _gen_meta_yml
 		$param = { %{$META_PARAMS{':all'}}, %$param };
 	}
 	
-	# requires:
-	my $requires = $param->{requires} || $this->{PREREQ_PM};
-	my $prereq_pm = '';
-	foreach my $mod ( sort { lc $a cmp lc $b } keys %$requires )
-	{
-		my $ver = $requires->{$mod};
-		$prereq_pm .= sprintf "    %-30s %s\n", "$mod:", $ver;
-	}
-	chomp $prereq_pm;
+	# requires:, build_requires:
+	my $requires_to_yaml = sub{
+		my $key = shift;
+		my $hash = shift;
+		my $yaml = '';
+		my ($maxkeylen) = sort{$b<=>$a} map{length($_)} keys   %$hash;
+		my ($maxvallen) = sort{$b<=>$a} map{length($_)} values %$hash;
+		foreach my $name ( sort { lc $a cmp lc $b } keys %$hash )
+		{
+			my $ver = $hash->{$name};
+			$yaml .= sprintf "  %-*s %*s\n", $maxkeylen+1, "$name:", $maxvallen, $ver;
+		}
+		chomp $yaml;
+		$yaml ? "$key:\n$yaml" : '';
+	};
+	my $requires = $requires_to_yaml->(requires => $param->{requires} || $this->{PREREQ_PM});
+	my $build_requires = $requires_to_yaml->(build_requries => $param->{build_requires});
 	
 	# no_index:
 	my $no_index = $param->{no_index};
@@ -215,7 +223,6 @@ sub _gen_meta_yml
 	$yaml->{installdirs}  = $this->{INSTALLDIRS};
 	$yaml->{author}       = $this->{AUTHOR};
 	$yaml->{license}      = $this->{LICENSE};
-	$yaml->{requires}     = $prereq_pm;
 	foreach my $key (keys %$yaml)
 	{
 		if( $yaml->{$key} )
@@ -226,6 +233,8 @@ sub _gen_meta_yml
 	}
 	$yaml->{abstract} = $abstract;
 	$yaml->{no_index} = $no_index;
+	$yaml->{requires} = $requires;
+	$yaml->{build_requires} = $build_requires;
 	
 	$yaml->{distribution_type} = 'distribution_type: module';
 	$yaml->{generated_by} = "generated_by: ExtUtils::MY_Metafile version $VERSION, EUMM-$ExtUtils::MakeMaker::VERSION.";
@@ -237,7 +246,7 @@ sub _gen_meta_yml
 	my $extras = {};
 	foreach my $key (sort keys %$param)
 	{
-		grep{$key eq $_} qw(no_index requires) and next;
+		grep{$key eq $_} qw(no_index requires build_requires) and next;
 		my $line = _yaml_out->({$key=>$param->{$key}});
 		if( exists($yaml->{$key}) )
 		{
@@ -262,8 +271,10 @@ sub _gen_meta_yml
 	$yaml->{license} ||= 'license: unknown';
 	foreach my $key (keys %$yaml)
 	{
+		$key eq 'extras' and next;
 		$yaml->{$key} ||= "#$key:";
 	}
+	$yaml->{extras} &&= "\n# extras.\n$yaml->{extras}";
 	
 	# packing into singple text.
 	my $meta = <<YAML;
@@ -276,6 +287,7 @@ $yaml->{author}
 $yaml->{abstract}
 $yaml->{license}
 $yaml->{requires}
+$yaml->{build_requires}
 $yaml->{no_index}
 $yaml->{extras}
 $yaml->{distribution_type}
@@ -337,7 +349,7 @@ ExtUtils::MY_Metafile - META.yml customize with ExtUtil::MakeMaker
 
 =head1 VERSION
 
-Version 0.05
+Version 0.06
 
 
 =head1 SYNOPSIS
