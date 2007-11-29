@@ -17,7 +17,7 @@ J<< ja; ExtUtils::MY_Metafile - ExtUtil::MakeMaker での META.yml カスタマ�
 
 =head1 VERSION
 
-Version 0.07
+Version 0.08
 
 =head1 SYNOPSIS
 
@@ -86,8 +86,8 @@ J<< ja;
 =item no_index
 
 If you not specify C<directory> parameter for C<no_index> and
-there is directory C<inc t ex eg example examples sample samples
-demo demos>, they are set as it.
+there are any directory of F<inc t ex eg example examples
+sample samples demo demos>, they are set as it.
 J<< ja;
 C<no_index> の C<directory> パラメータが指定されていなくて
 F<inc t ex eg example examples sample samples demo demos>
