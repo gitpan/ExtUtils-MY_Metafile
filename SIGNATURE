@@ -14,27 +14,27 @@ not run its Makefile.PL or Build.PL.
 -----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA1
 
-SHA1 ecd3f1d924a94559621a70633e3c7172f88a3f5b Changes
+SHA1 ad6d9575a8b39b87e5e24fa80ec4905a089119ba Changes
 SHA1 fbe7d9503098687a46a76047e7b75e026c5ed6e1 MANIFEST
-SHA1 7ea2d234b06dcf1715ce7debe9d3beeda009e829 META.yml
+SHA1 754206195d277a9bd6c9632d2aefdfe6256c727a META.yml
 SHA1 e95712ef28b021fdfc1b8d6b03cf69c67f9e4d6b Makefile.PL
 SHA1 d0f01f1bed98ea993350d159f8c14a309cd98b43 README
 SHA1 b46aabb98f07c7be7e1d1e14affa2abee07e1d95 example/MyTest.pm
 SHA1 076e990dccfd578ec7e9b41f62138dc8dc520c3b example/make.pl
-SHA1 0373a31834f0844535a4cfcef8908b3e4cfa1ce1 lib/ExtUtils/MY_Metafile.mlpod
-SHA1 7009a4e6b133bb2c9dceaba0f4e9fc4d06b76828 lib/ExtUtils/MY_Metafile.pm
-SHA1 9015dfb1f64fd5175566c20c28209b5c438d7b70 t/00-load.t
-SHA1 2977f32d1f7117f55c2ca02306c270b56cf2e42f t/01_basic.t
-SHA1 d9e958e217aa026d5bad51e1109fd7b333b17fb6 t/01_import.t
-SHA1 e90a70ba601c32188338ddeac4578c3ed941259e t/01_inc_import.t
-SHA1 ed17cadb90b1ea8e288c3c1c33dd7af3fc402bf6 t/01_mm_metafile_target.t
-SHA1 d5fa03a67d2cb379306c6aa58655301dad0ec33e t/boilerplate.t
+SHA1 d48d5519683b97ab1b68b56a3e59d024ff61eab7 lib/ExtUtils/MY_Metafile.mlpod
+SHA1 8f82fb66a619227e75fe26b852670078cd1a9be0 lib/ExtUtils/MY_Metafile.pm
+SHA1 43365d38e089d4203fadd02b99c3413ae1c2a726 t/00-load.t
+SHA1 44278066e4fc8a167a8c456875955ddf33c2c1bc t/01_basic.t
+SHA1 9db9abe4c7398a33f48831a86d0713e54387522f t/01_import.t
+SHA1 66baf6525695a06755027450a8a612ef12b25e16 t/01_inc_import.t
+SHA1 612032f9c2c2a329f09295e2a31831b8b9b102b1 t/01_mm_metafile_target.t
+SHA1 9b7475d69e982e294d9787349b7a867ca7c04684 t/boilerplate.t
 SHA1 44cccd384ccc8d87d09e2e612758755e64c45d70 t/pod-coverage.t
-SHA1 d110b42bee27b0b1520b51e6f15ec582004f8bba t/pod.t
+SHA1 bf530dd478faacb1f49573428406dac0195fef23 t/pod.t
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.2 (GNU/Linux)
 
-iD8DBQFHTkGaewjCT38k4dkRAovfAJ9X91lcVZjCVCFM/yPrWEh8c+LeMgCdGUvr
-mF5UzY4IE1KNZvHhjtSzK8A=
-=AncW
+iD8DBQFHnURzewjCT38k4dkRAu7aAJ9zCJdqRhQDSWqVA8Y1KmT6GsHh2ACggjlT
+XGRInAJjgt6yFWCiufh+LNs=
+=Mg8q
 -----END PGP SIGNATURE-----

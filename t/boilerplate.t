@@ -1,7 +1,7 @@
 #! perl -T
 
 use strict;
-use warnings;
+BEGIN{ $^W=1; } #use warnings;
 use Test::More tests => 3;
 
 sub not_in_file_ok {

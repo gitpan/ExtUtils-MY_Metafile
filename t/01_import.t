@@ -9,7 +9,7 @@
 # $Id$
 # -----------------------------------------------------------------------------
 use strict;
-use warnings FATAL => 'all';
+BEGIN{ $^W=1; } #use warnings FATAL => 'all';
 use Test::More tests => 7;
 
 BEGIN{ use_ok('ExtUtils::MY_Metafile'); }

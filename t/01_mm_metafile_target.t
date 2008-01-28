@@ -9,7 +9,7 @@
 # $Id$
 # -----------------------------------------------------------------------------
 use strict;
-use warnings FATAL => 'all';
+BEGIN{ $^W=1; } #use warnings FATAL => 'all';
 use Test::More tests => 5;
 use Test::Exception;
 

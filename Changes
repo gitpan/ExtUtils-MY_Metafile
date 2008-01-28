@@ -1,5 +1,8 @@
 Revision history for ExtUtils-MY_Metafile
 
+0.09    Mon Jan 28 11:32:24 JST 2008
+        fix, warn was raised when EUMM version is in devel.
+
 0.08    Thu Nov 29 11:38:20 JST 2007
         support for META-spec v1.3.
 
